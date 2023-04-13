@@ -6,6 +6,8 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 
+
+
 const { AllRoutes } = require("./router/router");
 module.exports = class Application {
 
@@ -25,6 +27,15 @@ module.exports = class Application {
     // Method for configuring the application
     configApplication(){
         const path = require("path")
+
+        // Handle CORS issue + connect to FrontEnd
+        this.#app.use(function(req, res, next) {
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE"); // If using .fetch and not axios
+            res.header("Access-Control-Allow-Headers", "auth-token, Origin, X-Requested-With, Content-Type, Accept");
+            next();
+        });
+        
         this.#app.use(this.#express.static(path.join(__dirname, "..", "public")))
         this.#app.use(this.#express.json());
         this.#app.use(this.#express.urlencoded({extended : true}));

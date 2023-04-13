@@ -48,12 +48,12 @@ function registerValidator(){
 
         body("password").custom((value, ctx) => {
             if(!value) throw "password should't be empty";
-            if(value !== ctx?.req?.body?.confirm_password) throw "password is not the same";
+         /*    if(value !== ctx?.req?.body?.confirm_password) throw "password is not the same"; */
             return true
-        }),
+        })/* ,
         body("confirm_password")
             .notEmpty()
-            .withMessage("confirm_password shouldn't be empty")
+            .withMessage("confirm_password shouldn't be empty") */
     ]
 
 }

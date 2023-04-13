@@ -19,13 +19,13 @@ class AuthController{
     async register(req, res, next){
         try { 
         // Extract the user information from the request body
-        const {username, password, email, mobile} = req.body;
+        const {username, password, confirmPassword, email, mobile} = req.body;
 
         // Hash the user's password using bcrypt
-        const hash_password = hashString(password)
+        const hash_password = hashString(password) 
 
         // Create a new user object in the database
-        const user = await UserModel.create({ username, email, password : hash_password, mobile })
+        const user = await UserModel.create({ username, email, confirmPassword, password: hash_password, mobile })
         
         // If the username is already in use, catch the error and throw a custom error object
         .catch(err => {
