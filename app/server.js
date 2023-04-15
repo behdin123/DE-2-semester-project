@@ -65,6 +65,10 @@ module.exports = class Application {
         })
     }
 
+getExpressApp() {
+        return this.#app; 
+    }
+
     // Method for handling errors
     errorHandler(){
         this.#app.use((req, res, next) => {

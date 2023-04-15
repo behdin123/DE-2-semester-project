@@ -69,6 +69,8 @@ class UserController {
     }
   }
 
+  
+
 
   /**
    * Uploads a profile image for the authenticated user

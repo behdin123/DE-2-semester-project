@@ -7,7 +7,7 @@
     "start-server": "nodemon index.js",
     "start-swagger": "nodemon --watch swagger.yaml --exec echo",
     "dev": "concurrently \"npm run start-server\" \"npm run start-swagger\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha app/test/2_workflow.test.js --exit"
   },
   "keywords": [],
   "author": "",
@@ -31,7 +31,10 @@
     "yup": "^1.0.2"
   },
   "devDependencies": {
+    "chai": "^4.3.7",
+    "chai-http": "^4.3.0",
     "concurrently": "^8.0.1",
+    "mocha": "^10.2.0",
     "nodemon": "^2.0.22"
   }
 }

@@ -56,8 +56,11 @@ class ProjectController {
 
       const owner = req.user._id
 
+      console.log('Before creating a new project'); // Add this line
       // create new project
       const result = await ProjectModel.create({title, description, owner, image, tags,});
+
+      console.log('After creating a new project, result:', result); // Add this line
 
       // check if the project was created successfully
       if (!result)throw {
@@ -65,14 +68,17 @@ class ProjectController {
         message: "Adding the project encountered a problem",
       };
 
+      console.log('Before creating default columns'); // Add this line
       // Create default columns for the project
       await this.createDefaultColumns(result._id);
+      console.log('After creating default columns'); // Add this line
 
       // return success message
       return res.status(201).json({
         status : 201, 
         success: true, 
-        message : 'The project was successfully created'
+        message : 'The project was successfully created',
+        project: result, // Add this line to include the project object in the response
       })
     } 
     catch (error) {

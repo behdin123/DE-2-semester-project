@@ -46,7 +46,9 @@ function registerValidator(){
             return true;
         }),
 
-        body("password").custom((value, ctx) => {
+        body("password")
+        .isLength({min : 6, max : 16}).withMessage("The password should at least be between 6 and 16 characters")
+        .custom((value, ctx) => {
             if(!value) throw "password should't be empty";
          /*    if(value !== ctx?.req?.body?.confirm_password) throw "password is not the same"; */
             return true
