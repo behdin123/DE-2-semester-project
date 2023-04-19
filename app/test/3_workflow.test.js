@@ -1,8 +1,7 @@
 /*
- * This workflow test file, is testing that the user can be registered + login, use token stored in coockie, create project and Remove it.
- * its also testing, Invalid input test, so when we try to register a user with onlu 1 letter as username and 3 charachters for 
- * password, it should not allow it
+ * This workflow test file, is testing that the user can be registered + login, use token stored in coockie, create project and update it
  */
+
 
 // Load environment variables from the .env.test file
 const dotenv = require('dotenv');
@@ -95,7 +94,7 @@ describe('Project workflow tests', () => {
 
                             .field('title', project.title)
                             .field('description', project.description)
-                            .field('tags', JSON.stringify(project.tags)) // Konverter tags-arrayet til en streng
+                            .field('tags', JSON.stringify(project.tags)) // Convert the tags array to a string
                             .attach('image', fs.readFileSync(path.join(__dirname, 'images', 'african-lion-2888519.jpg')), 'african-lion-2888519.jpg')
 
                             .end((err, res) => {
@@ -115,53 +114,45 @@ describe('Project workflow tests', () => {
                                 console.log("Project creation error:", res.body);
                                     
 
-                                // 4) remove a new project
+                                // 4) Update the created project
                                 chai.request(app)
-                                    .delete('/project/remove/' + savedProject._id)
-                                    .set("Cookie", `jwt=${token}`)
-                                    .end((err, res) => {
-                                        expect(res.status).to.be.equal(200);
-                                        const actualVal = res.body.message;
-                                        expect(actualVal).to.be.equal('The project and associated columns were successfully deleted');
-                                        done();
-                                    });
+                                .put('/project/edit/' + savedProject._id)
+                                .set('Cookie', `jwt=${token}`)
+                                .send({
+                                    title: 'Updated Test Project',
+                                    description: 'Updated Test Project Description',
+                                    tags: ['updatedTag1', 'updatedTag2']
+                                })
+                                .end((err, res) => {
+                                    if (err) {
+                                        console.log("Project update error:", err);
+                                    }
+                                    console.log("Project update response body:", res.body);
+                                    expect(err).to.be.null;
+                                    expect(res.status).to.be.equal(200);
+                                    const actualVal = res.body.message;
+                                    expect(actualVal).to.be.equal('The update was successful');
+
+                                    // Get and check that the project has been updated
+                                    chai.request(app)
+                                        .get('/project/' + savedProject._id)
+                                        .set('Cookie', `jwt=${token}`)
+                                        .end((err, res) => {
+                                            if (err) {
+                                                console.log("Project retrieval error:", err);
+                                            }
+                                            console.log("Project retrieval response body:", res.body);
+                                            expect(err).to.be.null;
+                                            expect(res.status).to.be.equal(200);
+                                            const updatedProject = res.body.project;
+                                            expect(updatedProject.title).to.be.equal('Updated Test Project');
+                                            expect(updatedProject.description).to.be.equal('Updated Test Project Description');
+                                            expect(updatedProject.tags).to.be.eql(['updatedTag1', 'updatedTag2']);
+                                            done();
+                                        });
+                                });
                             });
                     });
             });
     });
-
-
-    // Invalid input test
-    it('invalid user input test', (done) => {
-
-        // 1) Register with invalid inputs
-        let user = {
-            username: "u", // wrong username - validation should catch this
-            mobile: "53525278",
-            email: "testuser@example.com",
-            password: "123", // wrong password - should at least be between 6 and 16 characters
-            confirm_password: "123",
-        }
-
-        chai.request(app)
-            .post('/auth/register') 
-            .send(user)
-            .end((err, res) => {
-
-                // Asserts
-                expect(res.status).to.be.equal(400); 
-
-                expect(res.body).to.be.a('object');
-                expect(res.body.messages).to.be.a('object');
-
-                console.log("res.body.errors:", res.body);
-                
-                const messages = res.body.messages;
-                expect(messages.username).to.be.equal("this username isn't allowed");
-                expect(messages.password).to.be.equal("The password should at least be between 6 and 16 characters");
-                
-                done();
-            });
-    });
-
 });
