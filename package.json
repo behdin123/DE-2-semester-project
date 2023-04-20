@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "start-server": "nodemon index.js",
     "start-swagger": "nodemon --watch swagger.yaml --exec echo",
     "dev": "concurrently \"npm run start-server\" \"npm run start-swagger\"",
