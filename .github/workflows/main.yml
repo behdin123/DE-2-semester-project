@@ -6,7 +6,7 @@ on:
 
 
 jobs:
-
+  # Tests & node-version
   test:
     name: Test
     runs-on: ubuntu-latest
@@ -17,15 +17,16 @@ jobs:
 
     steps:
       - name: Checkout 
-        uses: actions/checkout@v3 # was "v2" before 
+        uses: actions/checkout@v3 # last version was "v2"
         with: 
           fetch-depth: 0
 
       - name: Use Node.JS ${{ matrix.node-version }}
-        uses: actions/setup-node@v3 # was "v2" before
+        uses: actions/setup-node@v3 # last version was "v2"
         with: 
           node-version: ${{ matrix.node-version }}
 
+      # NPM install & build & test
       - name: NPM install, build and test
         run: |
           npm install
@@ -37,17 +38,17 @@ jobs:
           JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
 
 
-  # Heavily modified deploy job to fit render.com
+  # deploy to render.com
   deploy:
     name: Deploy
-    needs: [test] # Our tests must pass in order to run the deploy job
+    needs: [test] 
     runs-on: ubuntu-latest
 
     steps: 
       - name: Deploy to production
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:
-          service-id: ${{ secrets.SERVICE_ID }} # Can be found as part of the Deploy Hook
-          api-key: ${{ secrets.RENDER_API_KEY }} # Create your API key in Render Dashboard > Account Settings
+          service-id: ${{ secrets.SERVICE_ID }} # Deploy Hook
+          api-key: ${{ secrets.RENDER_API_KEY }} # Create API key in Render - Account Settings
 
     
