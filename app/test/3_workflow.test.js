@@ -131,7 +131,7 @@ describe('Project workflow tests', () => {
                                     expect(err).to.be.null;
                                     expect(res.status).to.be.equal(200);
                                     const actualVal = res.body.message;
-                                    expect(actualVal).to.be.equal('The update was successful.');
+                                    expect(actualVal).to.be.equal('The update was successful');
 
                                     // Get and check that the project has been updated
                                     chai.request(app)
