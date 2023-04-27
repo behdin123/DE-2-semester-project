@@ -122,7 +122,7 @@ describe('Project workflow tests', () => {
                                     .end((err, res) => {
                                         expect(res.status).to.be.equal(200);
                                         const actualVal = res.body.message;
-                                        expect(actualVal).to.be.equal('The project and associated columns were successfully deleted.');
+                                        expect(actualVal).to.be.equal('The project and associated columns were successfully deleted');
                                         done();
                                     });
                             });
