@@ -6,6 +6,8 @@ info:
 servers:
   - url: http://localhost:1100/
     description: Localhost development server
+  - url: https://de-2-semester-project.onrender.com/
+    description: Localhost development server
 
 components:
   schemas:
