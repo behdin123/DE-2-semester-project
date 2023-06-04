@@ -39,7 +39,7 @@ describe('Project workflow tests', () => {
     });
 
     // POST Create functional test
-    it('should register + login a user, create a project and delete it from DB', (done) => {
+    it('should register + login a user, create a project and update it from DB', (done) => {
         let user = {
             username: "testnewusertest",
             mobile: "53525278",
