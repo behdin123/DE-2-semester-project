@@ -42,7 +42,7 @@ describe('Project workflow tests', () => {
     // POST Create functional test
     it('should register + login a user, create a project and delete it from DB', (done) => {
         let user = {
-            username: "testnewusertest",
+            username: "gucci021",
             mobile: "53525278",
             email: "testuser@example.com",
             password: "password123",
@@ -64,7 +64,7 @@ describe('Project workflow tests', () => {
                 chai.request(app)
                     .post('/auth/login')
                     .send({
-                        "username": "testnewusertest",
+                        "username": "gucci021",
                         "password": "password123"
                     })
                     .end((err, res) => {
