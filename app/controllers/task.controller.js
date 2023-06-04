@@ -35,6 +35,26 @@ class TaskController {
     }
   }
 
+  // Retrieves tasks by their column ID
+  async getTasksByColumn(req, res, next) {
+    try {
+      const { columnId } = req.params;
+
+      const tasks = await TaskModel.find({ column: columnId });
+
+      if (!tasks) throw { status: 404, message: "Tasks not found" };
+
+      return res.status(200).json({
+        status: 200,
+        success: true,
+        tasks,
+      });
+
+    } catch (error) {
+      next(error);
+    }
+  }
+
   // Retrieves a task by its ID
   async getTaskById(req, res, next) {
     try {
@@ -107,6 +127,7 @@ class TaskController {
         task,
       });
     } catch (error) {
+      console.error('Error in updateTaskColumn:', error);
       next(error);
     }
   }

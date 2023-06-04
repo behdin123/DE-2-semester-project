@@ -6,22 +6,40 @@ const { createLinkForFiles } = require("../modules/functions");
  */
 class UserController {
 
+  
    /**
    * Returns the profile information of the authenticated user
    */
   getProfile(req, res, next) {
+    const user = req.user;
     try {
-      const user = req.user;
+      UserModel.findById(req.user._id)
+      .then(user => {
+        user.profile_image = createLinkForFiles(user.profile_image, req);
 
-      // Call the createLinkForFiles function to create a link to the user's profile image
-      user.profile_image = createLinkForFiles(user.profile_image, req);
+      // Include all the fields in the response
+      const responseUser = {
+        first_name: user.first_name,
+        last_name: user.last_name,
+        username: user.username,
+        mobile: user.mobile,
+        roles: user.roles,
+        email: user.email,
+        profile_image: user.profile_image,
+        skills: user.skills,
+        teams: user.teams,
+        token: user.token,
+        inviteRequests: user.inviteRequests
+      };
 
       // Send a JSON response with the user profile
       return res.status(200).json({
         status: 200,
         success: true,
-        user,
+        user: responseUser,
       });
+    })
+    .catch(next);
 
     } catch (error) {
       next(error);
@@ -37,31 +55,36 @@ class UserController {
       // Clone the incoming data object to prevent accidental mutation of the original
       let data = { ...req.body };
       const userID = req.user._id;
+      console.log("Incoming data:", data);
 
       // Define the valid fields to be updated and invalid data values to be removed
-      let fields = ["first_name", "last_name", "skills"];
+      let fields = ["first_name", "last_name", "username", "skills", "mobile", "email", "Teams"];
       let badValues = ["", " ", null, undefined, 0, -1, NaN, [], {}];
 
       // Iterate through the incoming data and remove invalid fields and values
       Object.entries(data).forEach(([key, value]) => {
-        console.log(key, value);
+        console.log("test2", key, value);
         if (!fields.includes(key)) delete data[key];
         if (badValues.includes(value)) delete data[key];
       });
-      console.log(data);
+
+      console.log("test",  data,  userID);
 
       // Update the user's profile data in the database
       const result = await UserModel.updateOne({ _id: userID }, { $set: data });
-
+      
+      console.log("Update result:", result);
+      
       // If the update was successful, return a success message
-      if (result.modifiedCount > 0) {
+      if (result.modifiedCount   > 0) {
         return res.status(200).json({
           status: 200,
-          succerss: true,
+          success: true,
           message: "The profile was updated successfully.",
         });
+        
       }
-
+     
       // If the update failed, throw an error
       throw { status: 400, message: "The update was not successful" };
     } catch (error) {
@@ -88,7 +111,7 @@ class UserController {
         { $set: { profile_image: filePath } }
       );
 
-      // check if the update was not successful and throw error
+      // check if the update was not successful throw error
       if (result.modifiedCount == 0)
         throw { status: 400, message: "The update was not successful" };
 
@@ -97,6 +120,7 @@ class UserController {
         status: 200,
         success: true,
         message: "The update was successful",
+        profile_image: filePath,
       });
     } catch (error) {
       next(error);

@@ -21,6 +21,9 @@ const router = require("express").Router();
 // Create a new task
 router.post("/create", verifyToken, TaskController.createTask);
 
+// Get tasks by column ID
+router.get("/column/:columnId/tasks", verifyToken, mongoIDValidator("columnId"), expressValidatorMapper, TaskController.getTasksByColumn);
+
 // Get a task by its ID
 router.get("/:taskId", verifyToken, mongoIDValidator("taskId"), expressValidatorMapper, TaskController.getTaskById);
 

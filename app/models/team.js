@@ -13,8 +13,7 @@ const mongoose = require("mongoose");
 const TeamSchema = new mongoose.Schema({
     name : {type : String, required : true},
     description : {type : String},
-    username : {type : String, required : true, unique : true},
-    users : {type : [mongoose.Types.ObjectId], default : []},
+    users : {type : [mongoose.Types.ObjectId]},
     owner : {type : mongoose.Types.ObjectId, required : true},
 }, {
     timestamps : true

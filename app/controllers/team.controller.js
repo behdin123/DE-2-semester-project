@@ -1,5 +1,6 @@
 const autoBind = require("auto-bind");
 const res = require("express/lib/response");
+const mongoose = require('mongoose');
 const { UserModel } = require("../models/user");
 const { TeamModel } = require("../models/team");
 
@@ -15,38 +16,47 @@ class TeamController {
   /** 
    * Creates a new team
   */
-
   async createTeam(req, res, next) {
     try {
       // Log the req.user object
       console.log("req.user:", req.user);
-
+  
       // Destructure relevant data from request body
-      const { name, username, description } = req.body;
-
+      let { name, users, description } = req.body;
+  
       // Get ID of the user who is creating the team
       const owner = req.user._id;
-
-      console.log("Owner ID:", owner); // Log the owner's ID
-
+  
+      // Find user IDs for given usernames
+      const userDocuments = await UserModel.find({ username: { $in: users } }).select('_id');
+  
+      // Check if all usernames were found
+      if (userDocuments.length !== users.length) {
+        throw { status: 400, message: "One or more usernames do not exist" };
+      }
+  
+      // If all usernames were found, convert them to user IDs
+      users = userDocuments.map(user => user._id);
+      
+      console.log({ name, description, users, owner });
       // Create a new team in the database using the data provided
       const team = await TeamModel.create({
         name,
         description,
-        username,
+        users,
         owner,
       });
-
+  
       // If team creation was unsuccessful, throw an error
       if (!team) throw { status: 500, message: "Creating the team encountered a problem" };
-
+  
       // Return a success response if team creation was successful
       return res.status(201).json({
         status: 201,
         success: true,
         message: "The team was successfully created",
       });
-
+  
     } catch (error) {
       next(error);
     }
@@ -108,9 +118,10 @@ class TeamController {
 
       // find all teams where user is owner or a member 
       const teams = await TeamModel.aggregate([
+        
         {
           $match : {
-            $or: [{ owner: userID }, { users: userID }]
+            $or: [{ owner: mongoose.Types.ObjectId(userID) }, { users: mongoose.Types.ObjectId(userID) }]
           },
         },
         {
@@ -120,6 +131,33 @@ class TeamController {
             localField : "owner",
             foreignField : "_id",
             as : "owner"
+          }
+        },
+        {
+          // join with users collection to get user details
+          $lookup : {
+            from : "users",
+            localField : "users",
+            foreignField : "_id",
+            as : "users"
+          }
+        },
+        {
+          $addFields: {
+            users: {
+              $map: {
+                input: "$users",
+                as: "user",
+                in: {
+                  _id: "$$user._id",
+                  first_name: "$$user.first_name",
+                  last_name: "$$user.last_name",
+                  username: "$$user.username",
+                  profile_image: "$$user.profile_image",
+                  // add any other fields you want to include
+                }
+              }
+            }
           }
         },
         {
@@ -138,13 +176,16 @@ class TeamController {
           $unwind : "$owner"
         }
       ]);
+
       // return teams in response
       return res.status(200).json({
         status: 200,
         success: true,
         teams,
       });
-    } catch (error) {}
+    } catch (error) {
+      console.error('Error:', error); // Log errors
+    }
   }
 
 
@@ -178,6 +219,8 @@ class TeamController {
     }
   }
 
+
+
   /** 
    * Checks whether a given user is a member of a given team
   */
@@ -194,7 +237,7 @@ class TeamController {
   }
 
 
-  //http:anything.com/team/invite/:teamID/:username
+
   /** 
    * Sends an invitation to a specified user to join a specified team
   */
@@ -270,12 +313,11 @@ class TeamController {
       console.log(req.body);
       const data = { ...req.body };
 
-      // Filter out properties that are falsy or empty
-      Object.keys(data).forEach((key) => {
-        if (!data[key]) delete data[key];
-        if (["", " ", undefined, null, NaN].includes(data[key]))
-          delete data[key];
-      });
+      const userDocuments = await UserModel.find({ username: { $in: data.users } }).select('_id');
+      if (userDocuments.length !== data.users.length) {
+        throw { status: 400, message: "One or more usernames do not exist" };
+      }
+      data.users = userDocuments.map((user) => user._id);
 
       // Extract the user ID and team ID from the request
       const userID = req.user._id;
@@ -310,6 +352,7 @@ class TeamController {
       next(error);
     }
   }
+
   removeUserFromTeam() {}
 }
 

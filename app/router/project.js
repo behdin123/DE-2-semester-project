@@ -33,7 +33,7 @@ const router = require("express").Router();
 
 
 // Create a new project
-router.post("/create",fileupload(), verifyToken, addStrToArr("tags"), uploadFile, createProjectValidator(),expressValidatorMapper, ProjectController.createProject)
+router.post("/create", fileupload(), verifyToken, addStrToArr("tags"), uploadFile, createProjectValidator(),expressValidatorMapper, ProjectController.createProject)
 
 // Get a list of all projects
 router.get("/list", verifyToken, ProjectController.getAllProject)

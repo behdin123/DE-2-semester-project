@@ -12,6 +12,8 @@ const { authRoutes } = require("./auth");
 
 const { projectRoutes } = require("./project")
 
+const { columnRoutes } = require("./column");
+
 const { taskRoutes } = require("./task");
 
 const { teamRoutes } = require("./team");
@@ -22,6 +24,10 @@ const { userRoutes } = require("./user");
 router.use("/auth", authRoutes)
 
 router.use("/project", projectRoutes)
+
+router.use("/project", columnRoutes);
+
+router.use("/project/:projectId", taskRoutes);
 
 router.use("/project/:projectId/tasks", taskRoutes);
 
