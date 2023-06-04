@@ -27,6 +27,7 @@ module.exports = class Application {
     // Method for configuring the application
     configApplication(){
         const path = require("path")
+        
         // Handle CORS issue + connect to FrontEnd
         this.#app.use(function(req, res, next) {
             res.header("Access-Control-Allow-Origin", "*");
