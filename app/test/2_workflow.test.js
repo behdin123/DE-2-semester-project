@@ -1,7 +1,7 @@
 /*
  * This workflow test file, is testing that the user can be registered + login, use token stored in coockie, create project and Remove it.
  * its also testing, Invalid input test, so when we try to register a user with only 1 letter as username and 3 charachters for 
- * password, it should not allow it
+ * password, it should not allow it.
  */
 
 // Load environment variables from the .env.test file
@@ -42,7 +42,7 @@ describe('Project workflow tests', () => {
     // POST Create functional test
     it('should register + login a user, create a project and delete it from DB', (done) => {
         let user = {
-            username: "gucci021",
+            username: "gucci02",
             mobile: "53525278",
             email: "testuser@example.com",
             password: "password123",
