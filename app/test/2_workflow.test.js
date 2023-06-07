@@ -95,7 +95,7 @@ describe('Project workflow tests', () => {
 
                             .field('title', project.title)
                             .field('description', project.description)
-                            .field('tags', JSON.stringify(project.tags)) // Konverter tags-arrayet til en streng
+                            .field('tags', JSON.stringify(project.tags)) // convert tag's array to string
                             .attach('image', fs.readFileSync(path.join(__dirname, 'images', 'african-lion-2888519.jpg')), 'african-lion-2888519.jpg')
 
                             .end((err, res) => {
