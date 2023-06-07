@@ -1,5 +1,3 @@
-Using concurrently for keep updating the swagger file, "watching it"
-
 Dansk:
 Vi gøre nu brug af verifyToken som henter tokenet fra cookien og ikke fra Authorization-headeren, i sit request.
 I denne tilfælde har vi valgt at gemme JWT-tokenet i en cookie, og ved at bruge verifyToken sikrer vi, at 
