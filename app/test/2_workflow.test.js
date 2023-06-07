@@ -1,7 +1,7 @@
 /*
  * This workflow test file, is testing that the user can be registered + login, use token stored in coockie, create project and Remove it.
  * its also testing, Invalid input test, so when we try to register a user with only 1 letter as username and 3 charachters for 
- * password, it should not allow it
+ * password, it should not allow 
  */
 
 // Load environment variables from the .env.test file
@@ -95,7 +95,7 @@ describe('Project workflow tests', () => {
 
                             .field('title', project.title)
                             .field('description', project.description)
-                            .field('tags', JSON.stringify(project.tags)) // Konverter tags-arrayet til en streng
+                            .field('tags', JSON.stringify(project.tags)) // convert tag's array to string
                             .attach('image', fs.readFileSync(path.join(__dirname, 'images', 'african-lion-2888519.jpg')), 'african-lion-2888519.jpg')
 
                             .end((err, res) => {
