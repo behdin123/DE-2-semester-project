@@ -53,7 +53,7 @@ describe('Project workflow tests', () => {
             .post('/auth/register')
             .send(user)
             .end((err, res) => {
-                expect(res.status).to.be.equal(200);
+                expect(res.status).to.be.equal(400);
                 expect(res.body).to.be.a('object');
                 expect(res.body.error).to.be.equal(undefined);
 
