@@ -8,7 +8,7 @@
     "start-server": "nodemon index.js",
     "start-swagger": "nodemon --watch swagger.yaml --exec echo",
     "dev": "concurrently \"npm run start-server\" \"npm run start-swagger\"",
-    "test": "mocha app/test/3_workflow.test.js --exit"
+    "test": "mocha app/test/* --exit"
   },
   "keywords": [],
   "author": "",

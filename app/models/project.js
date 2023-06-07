@@ -11,7 +11,7 @@ const ProjectSchema = new mongoose.Schema({
     image : {type : String, default : "/defaults/default.png"},
     owner : {type : mongoose.Types.ObjectId},
     team : {type : mongoose.Types.ObjectId},
-    Private : {type : Boolean, default : true},
+    private : {type : Boolean},
     tags : {type : [String], default : []}
 }, {
     timestamps : true
